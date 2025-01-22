@@ -13,6 +13,7 @@ var pause=document.querySelector("#pause");
 var next=document.querySelector("#next");
 var previous=document.querySelector("#previous");
 var selectedSong=0;
+var flag=0;
 var audio=new Audio();
 
 function makeSongList(){
@@ -28,19 +29,16 @@ function makeSongList(){
     })
     container.innerHTML=clutter;
     container.addEventListener("click",function(dets){
-        if(dets.target.classList.contains('cont')){
             songDisplay.innerHTML=`<img src="${songs[dets.target.id].image}">`
             pause.style.display="block";
             play.style.display="none";
             selectedSong=dets.target.id;
+            flag=1;
             audio.src=songs[selectedSong].url;
             audio.play();
-            
-        }
     })
 }
 function playControl(){
-    var flag=0;
     play.addEventListener("click",function(){
         play.style.display="none";
         pause.style.display="block";
@@ -85,8 +83,20 @@ function prevTrack(){
         songDisplay.innerHTML=`<img src="${songs[selectedSong].image}">`;
     })
 }
+function ifEnded(){
+    audio.addEventListener("ended",function(){
+        selectedSong++;
+        if(selectedSong>songs.length-1){
+            selectedSong=0;
+        }
+        audio.src=songs[selectedSong].url;
+        audio.play();
+        songDisplay.innerHTML=`<img src="${songs[selectedSong].image}">`;
+    })
+}
 makeSongList();
 playControl();
 nextTrack();
 prevTrack();
+ifEnded();
 
